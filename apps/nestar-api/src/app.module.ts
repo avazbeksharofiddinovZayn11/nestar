@@ -24,3 +24,4 @@ import { DatabaseModule } from './database/database.module';
 	providers: [AppService, AppResolver],
 })
 export class AppModule {}
+34
