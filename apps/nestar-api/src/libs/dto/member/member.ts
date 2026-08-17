@@ -13,8 +13,8 @@ export class Member {
 	@Field(() => MemberStatus)
 	memberStatus: MemberStatus;
 
-	@Field(() => MemberAuthType, { nullable: true })
-	memberAuthtype: MemberAuthType;
+	@Field(() => MemberAuthType)
+	memberAuthType: MemberAuthType;
 
 	@Field(() => String)
 	memberPhone: String;
