@@ -37,37 +37,37 @@ export class Member {
 	memberDesc?: string;
 
 	@Field(() => Int)
-	memberProperties: number;
+	memberProperties: Number;
 
 	@Field(() => Int)
-	memberArticles: number;
+	memberArticles: Number;
 
 	@Field(() => Int)
-	memberFollowers: number;
+	memberFollowers: Number;
 
 	@Field(() => Int)
-	memberFollowings: number;
+	memberFollowings: Number;
 
 	@Field(() => Int)
-	memberPoints: number;
+	memberPoints: Number;
 
 	@Field(() => Int)
-	memberLikes: number;
+	memberLikes: Number;
 
 	@Field(() => Int)
-	memberViews: number;
+	memberViews: Number;
 
 	@Field(() => Int)
-	memberComments: number;
+	memberComments: Number;
 
 	@Field(() => Int)
-	memberRank: number;
+	memberRank: Number;
 
 	@Field(() => Int)
-	memberWarnings: number;
+	memberWarnings: Number;
 
 	@Field(() => Int)
-	memberBloks: number;
+	memberBlocks: Number;
 
 	@Field(() => Date, { nullable: true })
 	deletedAt?: Date;

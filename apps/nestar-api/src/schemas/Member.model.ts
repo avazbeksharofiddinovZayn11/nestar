@@ -102,7 +102,7 @@ const MemberSchema = new Schema(
 			default: 0,
 		},
 
-		memberBloks: {
+		memberBlocks: {
 			type: Number,
 			default: 0,
 		},
