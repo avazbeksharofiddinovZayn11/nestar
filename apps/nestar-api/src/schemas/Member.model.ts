@@ -68,7 +68,7 @@ const MemberSchema = new Schema(
 		},
 
 		memberFollowings: {
-			type: String,
+			type: Number,
 			default: 0,
 		},
 
@@ -98,7 +98,7 @@ const MemberSchema = new Schema(
 		},
 
 		memberWarnings: {
-			type: String,
+			type: Number,
 			default: 0,
 		},
 
