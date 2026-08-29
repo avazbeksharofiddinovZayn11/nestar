@@ -10,10 +10,11 @@ import { AuthMember } from '../auth/decorators/authMember.decorator';
 import { ObjectId } from 'mongoose';
 import { WithoutGuard } from '../auth/guards/without.guard';
 import { shapeIntoMongoObjectId } from '../../libs/config';
+import { PropertyUpdate } from '../../libs/dto/property/prperty.update';
 
 @Resolver()
 export class PropertyResolver {
-	constructor(private readonly propertyServie: PropertyService) {}
+	constructor(private readonly propertyService: PropertyService) {}
 
 	@Roles(MemberType.AGENT)
 	@UseGuards(RolesGuard)
@@ -25,7 +26,7 @@ export class PropertyResolver {
 		console.log('Mutation: createProperty');
 		input.memberId = memberId;
 
-		return await this.propertyServie.createProperty(input);
+		return await this.propertyService.createProperty(input);
 	}
 
 	@UseGuards(WithoutGuard)
@@ -38,7 +39,20 @@ export class PropertyResolver {
 
 		const propertyId = shapeIntoMongoObjectId(input);
 
-		return await this.propertyServie.getProperty(memberId, propertyId);
+		return await this.propertyService.getProperty(memberId, propertyId);
 	}
 
+	@Roles(MemberType.AGENT)
+@UseGuards(RolesGuard)
+@Mutation(() => Property)
+public async updateProperty(
+	@Args('input') input: PropertyUpdate,
+	@AuthMember('_id') memberId: ObjectId,
+): Promise<Property> {
+	console.log('Mutation: updateProperty');
+
+	input._id = shapeIntoMongoObjectId(input._id);
+
+	return await this.propertyService.updateProperty(memberId, input);
+}
 }
