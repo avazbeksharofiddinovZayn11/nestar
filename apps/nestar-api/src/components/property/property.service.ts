@@ -71,6 +71,14 @@ export class PropertyService {
 
 				targetProperty.propertyViews++;
 			}
+			//meLike
+			const likeIput = {
+				memberId: memberId,
+				likeRefId: propertyId,
+				likeGroup: LikeGroup.PROPERTY,
+			};
+			targetProperty.memberLiked = await this.likeService.checkLikeExistence(likeIput);
+			return targetProperty;
 		}
 
 		targetProperty.memberData = await this.memberService.getMember(null, targetProperty.memberId);
@@ -250,21 +258,23 @@ export class PropertyService {
 		return result[0];
 	}
 
-		public async likeTargetProperty(memberId: ObjectId, likeRefId: ObjectId): Promise<Property> {
-			const target: Property = await this.propertyModel.findOne({ _id: likeRefId, propertyStatus: PropertyStatus.ACTIVE }).exec();
-			if (!target) throw new InternalServerErrorException(Message.NO_DATA_FOUND);
-	
-			const input: LikeInput = {
-				memberId: memberId,
-				likeRefId: likeRefId,
-				likeGroup: LikeGroup.PROPERTY,
-			};
-			//@ts-ignore
-			const modifier: number = await this.likeService.toggleLike(input);
-			const result = await this.propertyStatsEditor({ _id: likeRefId, targetKey: 'propertyLikes', modifier: modifier });
-			if (!result) throw new InternalServerErrorException(Message.SOMETHING_WENT_WRONG);
-			return result;
-		}
+	public async likeTargetProperty(memberId: ObjectId, likeRefId: ObjectId): Promise<Property> {
+		const target: Property = await this.propertyModel
+			.findOne({ _id: likeRefId, propertyStatus: PropertyStatus.ACTIVE })
+			.exec();
+		if (!target) throw new InternalServerErrorException(Message.NO_DATA_FOUND);
+
+		const input: LikeInput = {
+			memberId: memberId,
+			likeRefId: likeRefId,
+			likeGroup: LikeGroup.PROPERTY,
+		};
+		//@ts-ignore
+		const modifier: number = await this.likeService.toggleLike(input);
+		const result = await this.propertyStatsEditor({ _id: likeRefId, targetKey: 'propertyLikes', modifier: modifier });
+		if (!result) throw new InternalServerErrorException(Message.SOMETHING_WENT_WRONG);
+		return result;
+	}
 
 	public async getAllPropertiesByAdmin(input: AllPropertiesInquiry): Promise<Properties> {
 		const { propertyStatus, propertyLocationList } = input.search;
