@@ -13,11 +13,13 @@ import { ViewGroup } from '../../libs/enums/view.enum';
 import { LikeInput } from '../../libs/dto/like/like.input';
 import { LikeGroup } from '../../libs/enums/like.enum';
 import { LikeService } from '../like/like.service';
+import { Follower, Following, MeFollowed } from '../../libs/dto/follow/follow';
 
 @Injectable()
 export class MemberService {
 	constructor(
 		@InjectModel('Member') private readonly memberModel: Model<Member>,
+		@InjectModel('Follow') private readonly followModel: Model<Follower | Following>,
 		private authService: AuthService,
 		private viewService: ViewService,
 		private likeService: LikeService,
@@ -87,6 +89,8 @@ export class MemberService {
 			throw new InternalServerErrorException(Message.NO_DATA_FOUND);
 		}
 
+		targetMember.meFollowed = [];
+
 		if (memberId) {
 			const viewInput = {
 				memberId: memberId,
@@ -99,17 +103,20 @@ export class MemberService {
 			if (newView) {
 				await this.memberModel.findOneAndUpdate(search, { $inc: { memberViews: 1 } }, { new: true }).exec();
 
-				targetMember.memberViews = Number(targetMember.memberViews ?? 0) + 1;
+				targetMember.memberViews++;
 			}
+
+			const likeInput = {
+				memberId: memberId,
+				likeRefId: targetId,
+				likeGroup: LikeGroup.MEMBER,
+			};
+
+			targetMember.memberLiked = await this.likeService.checkLikeExistence(likeInput);
+
+			targetMember.meFollowed = await this.checkSubscription(memberId, targetId);
 		}
 
-		//meLike
-		const likeIput = {
-			memberId: memberId,
-			likeRefId: targetId,
-			likeGroup: LikeGroup.MEMBER,
-		};
-		targetMember.memberLiked = await this.likeService.checkLikeExistence(likeIput);
 		return targetMember;
 	}
 
@@ -182,6 +189,25 @@ export class MemberService {
 	public async updateMemberByAdmin(input: MemberUpdate): Promise<Member> {
 		const result: Member = await this.memberModel.findByIdAndUpdate({ _id: input._id }, input, { new: true }).exec();
 		return result;
+	}
+
+	private async checkSubscription(followerId: ObjectId, followingId: ObjectId): Promise<MeFollowed[]> {
+		const result = await this.followModel
+			.findOne({
+				followingId: followingId,
+				followerId: followerId,
+			})
+			.exec();
+
+		return result
+			? [
+					{
+						followerId: followerId,
+						followingId: followingId,
+						myFollowing: true,
+					},
+				]
+			: [];
 	}
 
 	public async memberStatsEditor(input: StatisticModifier): Promise<Member> {
