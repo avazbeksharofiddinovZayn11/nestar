@@ -139,7 +139,7 @@ export class MemberService {
 			likeRefId: likeRefId,
 			likeGroup: LikeGroup.MEMBER,
 		};
-
+		//@ts-ignore
 		const modifier: number = await this.likeService.toggleLike(input);
 		const result = await this.memberStatsEditor({ _id: likeRefId, targetKey: 'memberLikes', modifier });
 		return result;
