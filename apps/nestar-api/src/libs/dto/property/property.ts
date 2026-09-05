@@ -81,7 +81,7 @@ export class Property {
 	/* from aggregetion */
 
 	@Field(() => [MeLiked], { nullable: true })
-	memberLiked?: MeLiked[];
+	meLiked?: MeLiked[];
 
 	@Field(() => Member, { nullable: true })
 	memberData?: Member;

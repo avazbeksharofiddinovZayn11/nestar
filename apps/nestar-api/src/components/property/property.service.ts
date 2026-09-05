@@ -16,7 +16,7 @@ import { StatisticModifier, T } from '../../libs/types/common';
 import { ViewService } from '../view/view.service';
 import moment = require('moment');
 import { PropertyUpdate } from '../../libs/dto/property/prperty.update';
-import { lookupMember, shapeIntoMongoObjectId } from '../../libs/config';
+import { lookupAuthMemberLiked, lookupMember, shapeIntoMongoObjectId } from '../../libs/config';
 import { LikeService } from '../like/like.service';
 import { LikeGroup } from '../../libs/enums/like.enum';
 import { LikeInput } from '../../libs/dto/like/like.input';
@@ -77,7 +77,7 @@ export class PropertyService {
 				likeRefId: propertyId,
 				likeGroup: LikeGroup.PROPERTY,
 			};
-			targetProperty.memberLiked = await this.likeService.checkLikeExistence(likeIput);
+			targetProperty.meLiked = await this.likeService.checkLikeExistence(likeIput);
 			return targetProperty;
 		}
 
@@ -147,6 +147,7 @@ export class PropertyService {
 						list: [
 							{ $skip: (input.page - 1) * input.limit },
 							{ $limit: input.limit },
+							lookupAuthMemberLiked(memberId),
 							lookupMember,
 							{ $unwind: '$memberData' },
 						],
@@ -158,7 +159,6 @@ export class PropertyService {
 
 		if (!result.length) throw new InternalServerErrorException(Message.NO_DATA_FOUND);
 
-		console.log('RESULT:', JSON.stringify(result, null, 2));
 		return result[0];
 	}
 
