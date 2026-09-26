@@ -72,14 +72,14 @@ export class PropertyService {
 
 				targetProperty.propertyViews++;
 			}
-			//meLike
+
 			const likeIput = {
 				memberId: memberId,
 				likeRefId: propertyId,
 				likeGroup: LikeGroup.PROPERTY,
 			};
+
 			targetProperty.meLiked = await this.likeService.checkLikeExistence(likeIput);
-			return targetProperty;
 		}
 
 		targetProperty.memberData = await this.memberService.getMember(null, targetProperty.memberId);
@@ -164,11 +164,11 @@ export class PropertyService {
 	}
 
 	public async getFavorites(memberId: ObjectId, input: OrdinaryInquiry): Promise<Properties> {
-		return await this.likeService.getFavoriteProperties(memberId, input)
+		return await this.likeService.getFavoriteProperties(memberId, input);
 	}
 
 	public async getVisited(memberId: ObjectId, input: OrdinaryInquiry): Promise<Properties> {
-		return await this.vievService.getVisitedProperties(memberId, input)
+		return await this.vievService.getVisitedProperties(memberId, input);
 	}
 
 	private shapeMatchQuery(match: T, input: PropertiesInquiry): void {
